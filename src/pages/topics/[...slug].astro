@@ -26,40 +26,49 @@ const { Content, headings } = await render(topic);
       <div class="flex gap-8">
         <article class="flex-1 min-w-0 max-w-3xl">
           <header class="mb-8">
-            <div class="flex items-center gap-2 text-sm text-text-secondary mb-2">
-              <span>Topic {topic.data.order}</span>
-              {topic.data.lastUpdated && (
-                <>
-                  <span>·</span>
+            <div
+              class="flex items-center gap-2 text-sm text-text-secondary mb-2"
+            >
+              {
+                topic.data.lastUpdated && (
                   <span>
-                    Updated {topic.data.lastUpdated.toLocaleDateString("en-US", {
+                    Updated{" "}
+                    {topic.data.lastUpdated.toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "short",
                       day: "numeric",
                     })}
                   </span>
-                </>
-              )}
+                )
+              }
             </div>
-            <h1 class="text-3xl font-bold">{topic.data.title}</h1>
-            {topic.data.description && (
-              <p class="text-text-secondary mt-2">{topic.data.description}</p>
-            )}
-            {topic.data.tags && topic.data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-2 mt-4">
-                {topic.data.tags.map((tag) => (
-                  <span class="text-sm px-2 py-1 bg-bg-secondary rounded">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+
+            <h1 class="text-3xl font-bold">
+              <span>{topic.data.order}. </span>
+              <span>{topic.data.title}</span>
+            </h1>
+            {
+              topic.data.description && (
+                <p class="text-text-secondary mt-2">{topic.data.description}</p>
+              )
+            }
+            {
+              topic.data.tags && topic.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mt-4">
+                  {topic.data.tags.map((tag) => (
+                    <span class="text-sm px-2 py-1 bg-bg-secondary rounded">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )
+            }
           </header>
           <div class="prose">
             <Content />
           </div>
         </article>
-        <aside class="hidden xl:block w-56 flex-shrink-0">
+        <aside class="hidden xl:block w-56 shrink-0">
           <TableOfContents headings={headings} />
         </aside>
       </div>
