@@ -48,11 +48,12 @@ body {
   color: var(--color-text-value);
 }
 
-.prose h1, .prose h2, .prose h3, .prose h4 {
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   color: var(--color-text-value);
   font-weight: 600;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
+  scroll-margin-top: 5rem; /* Account for fixed header height (3.5rem) + padding */
 }
 
 .prose h1 { font-size: 2rem; }

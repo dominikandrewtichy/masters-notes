@@ -27,15 +27,13 @@ const { headings } = Astro.props;
       <h2 class="text-sm font-semibold text-text-secondary uppercase tracking-wide">
         On this page
       </h2>
-      <button
-        id="close-toc"
-        class="p-1 hover:bg-bg-secondary rounded-md text-text-secondary"
-        aria-label="Close table of contents"
+      <!-- <button
+        class="toc-expand-collapse text-xs text-text-secondary hover:text-text px-1.5 py-0.5 hover:bg-bg-secondary rounded"
+        data-expanded="true"
+        aria-label="Collapse all sections"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+        Collapse all
+      </button> -->
     </div>
     <TableOfContents headings={headings} mobile={true} />
   </div>
@@ -46,7 +44,10 @@ const { headings } = Astro.props;
     const tocToggle = document.getElementById("toc-toggle");
     const mobileToc = document.getElementById("mobile-toc");
     const tocOverlay = document.getElementById("toc-overlay");
-    const closeToc = document.getElementById("close-toc");
+
+    function isOpen() {
+      return !mobileToc?.classList.contains("translate-x-full");
+    }
 
     function openTOC() {
       mobileToc?.classList.remove("translate-x-full");
@@ -58,9 +59,16 @@ const { headings } = Astro.props;
       tocOverlay?.classList.add("hidden");
     }
 
-    tocToggle?.addEventListener("click", openTOC);
+    function toggleTOC() {
+      if (isOpen()) {
+        closeTOC();
+      } else {
+        openTOC();
+      }
+    }
+
+    tocToggle?.addEventListener("click", toggleTOC);
     tocOverlay?.addEventListener("click", closeTOC);
-    closeToc?.addEventListener("click", closeTOC);
 
     // Close TOC when clicking a link
     mobileToc?.querySelectorAll(".toc-link").forEach((link) => {

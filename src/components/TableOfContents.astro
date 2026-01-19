@@ -80,15 +80,24 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
     mobile ? "block" : "hidden xl:block sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto"
   ]}>
     {!mobile && (
-      <h2 class="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
-        On this page
-      </h2>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-text-secondary uppercase tracking-wide">
+          On this page
+        </h2>
+        {/* <button
+          class="toc-expand-collapse text-xs text-text-secondary hover:text-text px-1.5 py-0.5 hover:bg-bg-secondary rounded"
+          data-expanded="true"
+          aria-label="Collapse all sections"
+        >
+          Collapse all
+        </button> */}
+      </div>
     )}
     <ul class="toc-list space-y-0.5 text-sm" data-toc-root>
       {tocTree.map((item) => (
         <li class="toc-item" data-depth="0" data-has-children={item.children.length > 0 ? "true" : "false"}>
           <div class="flex items-center gap-1">
-            {item.children.length > 0 ? (
+            {/* {item.children.length > 0 ? (
               <button
                 class="toc-toggle p-0.5 hover:bg-bg-secondary rounded text-text-secondary flex-shrink-0"
                 aria-label="Toggle section"
@@ -100,7 +109,7 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
               </button>
             ) : (
               <span class="w-4 flex-shrink-0"></span>
-            )}
+            )} */}
             <a
               href={`#${item.heading.slug}`}
               class="toc-link block py-1 text-text-secondary hover:text-text transition-colors"
@@ -114,7 +123,7 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
               {item.children.map((child) => (
                 <li class="toc-item" data-depth="1" data-has-children={child.children.length > 0 ? "true" : "false"}>
                   <div class="flex items-center gap-1">
-                    {child.children.length > 0 ? (
+                    {/* {child.children.length > 0 ? (
                       <button
                         class="toc-toggle p-0.5 hover:bg-bg-secondary rounded text-text-secondary flex-shrink-0"
                         aria-label="Toggle section"
@@ -126,7 +135,7 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
                       </button>
                     ) : (
                       <span class="w-4 flex-shrink-0"></span>
-                    )}
+                    )} */}
                     <a
                       href={`#${child.heading.slug}`}
                       class="toc-link block py-1 text-text-secondary hover:text-text transition-colors"
@@ -140,7 +149,7 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
                       {child.children.map((grandchild) => (
                         <li class="toc-item" data-depth="2" data-has-children={grandchild.children.length > 0 ? "true" : "false"}>
                           <div class="flex items-center gap-1">
-                            {grandchild.children.length > 0 ? (
+                            {/* {grandchild.children.length > 0 ? (
                               <button
                                 class="toc-toggle p-0.5 hover:bg-bg-secondary rounded text-text-secondary flex-shrink-0"
                                 aria-label="Toggle section"
@@ -152,7 +161,7 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
                               </button>
                             ) : (
                               <span class="w-4 flex-shrink-0"></span>
-                            )}
+                            )} */}
                             <a
                               href={`#${grandchild.heading.slug}`}
                               class="toc-link block py-1 text-text-secondary hover:text-text transition-colors"
@@ -230,6 +239,47 @@ function flattenTree(items: TocItem[], depth: number = 0, parentDepths: number[]
       (el as HTMLElement).style.maxHeight = el.scrollHeight + 'px';
       (el as HTMLElement).style.opacity = '1';
       (el as HTMLElement).style.transition = 'max-height 0.2s ease, opacity 0.2s ease';
+    });
+
+    // Expand/Collapse all button functionality
+    document.querySelectorAll('.toc-expand-collapse').forEach((button) => {
+      const newButton = button.cloneNode(true);
+      button.parentNode?.replaceChild(newButton, button);
+
+      newButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const btn = e.currentTarget as HTMLElement;
+        const nav = btn.closest('.toc-nav');
+        const isExpanded = btn.dataset.expanded === 'true';
+
+        if (isExpanded) {
+          // Collapse all
+          nav?.querySelectorAll('.toc-children').forEach((el) => {
+            (el as HTMLElement).style.maxHeight = '0';
+            (el as HTMLElement).style.opacity = '0';
+          });
+          nav?.querySelectorAll('.toc-toggle').forEach((toggle) => {
+            (toggle as HTMLElement).dataset.expanded = 'false';
+            toggle.querySelector('.toc-chevron')?.classList.add('-rotate-90');
+          });
+          btn.dataset.expanded = 'false';
+          btn.textContent = 'Expand all';
+          btn.setAttribute('aria-label', 'Expand all sections');
+        } else {
+          // Expand all
+          nav?.querySelectorAll('.toc-children').forEach((el) => {
+            (el as HTMLElement).style.maxHeight = el.scrollHeight + 'px';
+            (el as HTMLElement).style.opacity = '1';
+          });
+          nav?.querySelectorAll('.toc-toggle').forEach((toggle) => {
+            (toggle as HTMLElement).dataset.expanded = 'true';
+            toggle.querySelector('.toc-chevron')?.classList.remove('-rotate-90');
+          });
+          btn.dataset.expanded = 'true';
+          btn.textContent = 'Collapse all';
+          btn.setAttribute('aria-label', 'Collapse all sections');
+        }
+      });
     });
 
     // Highlight current section on scroll
