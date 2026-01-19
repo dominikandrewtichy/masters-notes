@@ -182,11 +182,14 @@ Right hamburger → TOC overlay (collapsible sections)
 - Auto-generated from all heading levels (h2, h3, h4, h5, h6)
 - Hierarchical/nested display reflecting heading structure
 - Collapsible/expandable sections for nested headings
+- **Expand/Collapse All button** - Toggle to expand or collapse all nested sections at once
 - Highlights current section on scroll
+- **Scroll offset** - Account for fixed header height when jumping to headings (CSS `scroll-margin-top` or JS offset)
 - Desktop: floating/sticky on right side
 - Mobile: hidden by default, accessible via right hamburger menu in header
   - Slides in from right as overlay
-  - Close button or tap-outside to dismiss
+  - Hamburger button toggles sidebar visibility (show/hide)
+  - Tap-outside to dismiss
 
 #### Dark Mode Toggle
 - Desktop: positioned in sidebar (bottom)
@@ -325,9 +328,9 @@ The following are not part of the initial implementation but could be added late
 | Navigation | Persistent sidebar + homepage list |
 | Search | Client-side (Pagefind) |
 | Tags | Optional per-topic, filterable |
-| TOC | Auto-generated from all headings, collapsible/expandable |
+| TOC | Auto-generated from all headings, collapsible/expandable, expand/collapse all button, scroll offset for fixed header |
 | Theme | Light/dark toggle (in sidebar) |
 | Mobile sidebar | Left hamburger menu for topics |
-| Mobile TOC | Right hamburger menu for table of contents |
+| Mobile TOC | Right hamburger toggles TOC visibility, tap-outside to dismiss |
 | Styling | Tailwind CSS + CSS variables |
 | Deployment | GitHub Pages |
