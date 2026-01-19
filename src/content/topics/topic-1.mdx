@@ -1,0 +1,970 @@
+---
+order: 1
+title: "Kvalita kódu"
+description: "Kvalita ve vývoji softwarových systémů, atributy kvality a softwarové metriky. Taktiky pro zajištění kvality na úrovni jednotlivých atributů kvality. Principy Clean Code a SOLID, refaktoring kódu. Testování kódu, jednotkové testy, integrační testy, uživatelské a akceptační testy. Ladění a testování výkonu. Proces řízení kvality ve vývoji softwarových systémů. Příklady z praxe pro vše výše uvedené. (PV260, PA017, PA103)"
+tags: []
+lastUpdated: 2026-01-19
+---
+
+## Quality in software development
+
+### Definition of software quality
+
+- software quality is the capability of a software product to conform to requirements (ISO/IEC 9001)
+- "you cannot manage what you cannot measure" - Tom DeMarco
+- balance between internal and external quality is essential
+
+### The software quality iceberg
+
+- external quality (visible/symptoms)
+    - reliability, usability, security, accuracy, performance
+    - detected through testing
+- internal quality (invisible/root)
+    - complexity, testability, flexibility, reusability, maintainability, understandability
+    - detected through inspection and static analysis
+
+### Quality engineering roadmap
+
+1. define quality issues
+    - requirements engineering, software metrics, quality attributes
+2. prevent quality issues
+    - coding best practices, clean code, SOLID, design patterns, code conventions, QA processes, standards (CMMI, ITIL, ISO 9000)
+3. detect quality issues
+    - functional/non-functional testing, design inspections, code reviews, automated static code analysis
+4. repair quality issues
+    - code repair, fault tolerance mechanisms, concurrency, refactoring
+5. keep track of quality issues
+    - issue tracking, technical debt management, configuration management
+
+### Quality Assurance (QA) goal
+
+- goal is to guarantee SW and service quality
+- driven by Service Level Agreements (SLA) - especially important for cloud and SaaS
+- SLA records common understanding about services, priorities, responsibilities, guarantees, warranties
+- SLA may specify levels of availability, serviceability, performance, operation, billing
+- often associated with penalties for breaching SLA
+
+### Requirements specification types
+
+- functional requirements
+    - define function of a system, related to use case modeling
+- non-functional requirements
+    - define restrictions on used technologies (HW/SW compatibility, middleware)
+- extra-functional requirements
+    - qualitative restrictions on implementation
+    - e.g., response time in X% of calls, availability X% every month
+    - plan for implementing these is detailed in system architecture
+
+## Quality attributes (the big five)
+
+### Maintainability
+
+- ease of change without increased technical debt
+- clean code is not only easier to change but also easier to optimize
+- difficulty to change a software system in response to new requirements, environment changes, or debugging
+
+### Performance
+
+- response time and efficiency in resource utilization
+- measure of latency an application exhibits in processing a business transaction
+- ability to fulfill requirements for fast response and high throughput while minimizing computational resources
+
+### Reliability
+
+- probability of failure-free operation over a period of time
+- ability to function without errors and maintain data integrity
+- probability that system will provide expected functionality without errors for given period of time
+
+### Testability
+
+- degree to which the system facilitates testing
+- how easily software can be effectively and reliably tested
+
+### Scalability
+
+- system's ability to handle growing workload
+- horizontal scaling (adding more servers) vs vertical scaling (adding more resources to single server)
+- ability of software system to adapt to new requirements related to system size and scope
+
+### Other quality attributes
+
+- availability
+    - percentage of time system is fully functional (e.g., "three nines" = 99.9%)
+- security
+    - ability to protect against unauthorized access, protect confidentiality, integrity, availability of data
+- safety
+    - ability to function without causing serious harm (e.g., injury)
+- robustness
+    - degree to which system can withstand unexpected events
+
+## Software metrics
+
+### Why software measurement?
+
+- to avoid anecdotal evidence without clear research
+- to increase visibility and understanding of the process
+- to analyze the software development process
+- to make predictions through statistical models
+
+### Taxonomy of measures
+
+- direct measures
+    - from direct measurement process (e.g., number of known defects)
+- indirect measures
+    - from mathematical equation (e.g., defect density)
+- internal attributes
+    - inner characteristics of product, process, resources
+- external attributes
+    - quality characteristics visible to users
+- objective measures
+    - same every time (e.g., LOC - automated)
+- subjective measures
+    - manually collected (e.g., time to use a feature)
+
+### Size metrics
+
+- LOC
+    - lines of code
+- CLOC
+    - commented lines of code
+- NLOC
+    - non-commented lines of code
+- NOC
+    - number of classes
+- NOM
+    - number of methods
+- NOP
+    - number of packages
+- size should be used for normalization (e.g., comments density = CLOC/LOC)
+- size metrics should never be used to assess developer productivity
+
+### Complexity metrics
+
+- McCabe's cyclomatic complexity (CC)
+    - number of independent paths in control flow
+    - CC = |E| - |N| + 2P (edges - nodes + 2 × connected components)
+    - essentially: number of branching instructions + 1
+    - typical ranges: 1-4 low, 5-7 medium, 8-10 high, 11+ very high
+    - assumption: higher complexity → more complex testing process
+- metrics measure syntactic complexity, NOT semantic complexity
+- same CC code can have different readability
+
+### Object-oriented metrics (Chidamber & Kemerer suite)
+
+- WMC
+    - weighted methods per class
+- DIT
+    - depth of inheritance tree
+    - deeper trees = more inherited methods = more complexity
+    - but also more reuse through inheritance
+- NOC
+    - number of children (direct subclasses)
+- CBO
+    - coupling between object classes
+    - class A is coupled to B if A uses methods/attributes of B
+    - high CBO is undesirable - damages modularity and prevents reuse
+- RFC
+    - response for a class
+    - number of methods that can be invoked in response to a message
+    - large RFC indicates more faults, harder to understand/test
+- LCOM
+    - lack of cohesion of methods
+    - how closely local methods relate to local instance variables
+    - LCOM = 1 - (sum of methods accessing each field) / (methods × fields)
+
+### Code test coverage
+
+- measure of how much source code is covered by tests
+- types: statement coverage, function coverage, branch coverage, condition coverage
+- 100% coverage does NOT mean bug-free software
+- "test coverage is useful for finding untested parts, but of little use as a numeric statement of how good your tests are" - Martin Fowler
+
+### Maintainability index (MI)
+
+- MI = 171 - 5.2·ln(V) - 0.23·CC - 16.2·ln(LOC)
+- where V = Halstead volume measuring code complexity based on length and vocabulary
+
+## Methods to measure and guarantee quality
+
+### Monitoring and testing
+
+- verification of quality of existing system
+- cheap and popular method
+- applicable on implemented system (e.g., performance testing)
+- imprecise results (depend on number of testing cycles)
+
+### Prediction from model
+
+- quality estimation of system under development
+- requires simplified model created during design time
+- usable during whole process of architectural design
+- quality of results strongly depends on model and its attention to detail
+- component systems suit this well: clear contracts, multiple model levels, high-level decomposition
+
+### Formal verification
+
+- verification of assumptions formulated about system
+- most expensive but most accurate method
+- evaluation performed on well-elaborated model (can be partially generated from code)
+- requires big effort to fine tune the model
+
+## Quality of Service (QoS)
+
+### Definition
+
+- guaranteed quality of component services
+- annotated interfaces with information about quality of individual services
+- expressed for each individual quality attribute
+
+### Naive approach problems
+
+- difficult to guarantee concrete numbers if quality of external services unknown
+- difficult to guarantee if quality of HW/SW environment unknown
+
+### Context of a component or service
+
+- quality depends on:
+    - service implementation (component developer)
+    - quality of required external services (other developers & architect)
+    - resources that component uses (deployer)
+    - the way service is used (domain expert)
+
+### Types of quality specification
+
+- when whole context is known
+    - guaranteeing exact numbers is OK
+    - e.g., "response time max 10ms in 99.9% cases"
+- when only part of context is known
+    - assume-guarantee specification
+        - "if context then we guarantee something"
+        - example: if reliability of CPU ≥ 94.33% and Service2() ≥ 93.77%, then Service1() ≥ 88.81%
+        - problem: not realistic to know all assumptions, danger of divergence
+    - parametric specification
+        - unknown context replaced with free parameters
+        - produces complete set of parameterized models
+        - sensitivity analysis reveals dependencies on assumptions
+
+## Code smells for quality attributes
+
+### Performance code smells
+
+1. redundant work
+    - time-consuming method computes the same thing multiple times
+    - solution: call once and cache the result (e.g., memoization for Fibonacci)
+2. one by one processing
+    - overused linear search/processing
+    - solution: use smarter algorithms/data structures (binary search, hash maps)
+3. long critical section
+    - unnecessary code in synchronized block
+    - solution: move code outside critical section, use multiple locks
+4. busy waiting
+    - repeatedly checking if something happened
+    - solution: Hollywood principle ("don't call us, we'll call you"), Observer pattern
+
+### Scalability code smells
+
+1. distribution improves performance
+    - not always - adds network I/O, coherence overhead
+2. just performance
+    - distribution affects reliability, maintainability, security, testability
+3. my framework takes care of it
+    - must address state sharing, data consistency, caching, load balancing, failure management
+
+- Fowler's first law: "don't distribute your objects" - stay local if you can
+
+### Reliability code smells
+
+1. input kludge
+    - not validating all inputs on all interfaces
+2. blind faith
+    - trusting others (or yourself) without verification
+3. poorly handled exceptions
+    - ignoring or swallowing exceptions
+4. unguarded sequential coupling
+    - assumptions on method call ordering without control
+5. fashionable coding
+    - using new technologies you don't understand
+
+### Testability code smells
+
+1. global state
+    - objects communicating secretly
+    - multiple executions produce different results, order matters, can't run parallel
+2. lack of dependency injection
+    - hidden implicit dependencies
+    - DI makes dependencies explicit, enforces initialization order at compile time
+3. law of Demeter violation
+    - "only talk to your immediate friends"
+    - too many dependencies indicate something wrong with the object
+4. misplaced and hard coded new operator
+    - mixing factory and service code
+    - constructor should only construct object and its dependencies
+
+### Maintainability code smells
+
+1. early tuning
+    - never compromise code clarity for premature optimization
+2. super-flexibility
+    - "flexibility breeds complexity" - start simple, build flexibility later
+3. simple = stupid, complex = smart
+    - even smart systems can be based on simple structures
+
+## Tactics for ensuring quality (basic)
+
+### Tactics for performance
+
+1. take profiler into action
+    - don't guess, measure objectively with profiler
+2. examine complexity and frequency
+    - do it more efficiently, do it less often
+3. concurrency
+    - only if you understand all aspects of parallel execution
+4. control resource use
+    - balance load, control access, cache, replicate
+
+### Tactics for reliability
+
+1. monitor what's happening
+    - acceptance checking, event logging
+2. handle exceptions carefully
+    - think about strategy and responsibilities
+3. make system fault tolerant
+    - redundancy, self-healing, rebinding to new providers
+4. implement restart/recovery capabilities
+    - form redirect on failure, diagnostics after crash
+
+### Tactics for testability
+
+1. write clean code
+    - simplicity matters
+2. avoid global state
+    - including hidden forms
+3. separate interfaces from implementation
+    - allow swapping during testing
+4. make dependencies explicit
+    - easier for developers/testers, compiler can help
+5. separate factories from business logic
+    - access each part independently
+
+### Tactics for maintainability
+
+1. write clean code
+    - "premature optimization is the root of all evil"
+2. get ready for change
+    - "change is the only constant" - interfaces, inheritance, polymorphism, design patterns
+3. design SW architecture carefully
+    - proper modularization is key
+4. watch all dependencies
+    - Law of Demeter, high cohesion, low coupling
+
+### Tactics for scalability
+
+1. stateless architecture
+    - store session data in shared cache, not on servers
+2. load balancing
+    - distribute requests across multiple servers
+3. horizontal scaling
+    - add more servers instead of more resources to one server
+4. caching
+    - cache frequently accessed data, reduce repeated processing
+5. asynchronous processing
+    - offload tasks to background processes
+6. database optimization
+    - optimize queries, indexing, denormalization
+7. monitoring and performance testing
+    - identify bottlenecks regularly
+
+## Architectural tuning tactics (detailed)
+
+### Tuning tactics overview
+
+- optimization of selected quality attribute by adjusting architecture
+- practice-proven techniques to increase quality
+- attention
+    - optimization not guaranteed, may make other attributes worse
+- apply in common sense, understand mutual connections between attributes
+
+### Performance tuning tactics
+
+1. minimize adapters and wrappers
+    - how: clean up interfaces, change signatures of provided services
+    - effect: reduce resources handling single service call
+2. simplify communication handled by interface
+    - how: offer multiple interfaces for same functionality
+    - why: different interfaces for different runtime contexts (platforms, data formats)
+3. separate data from computation
+    - why: data can be optimized without changes to software modules and vice versa
+    - goal of most SW architectures (layered, MVC)
+4. revise utilization of broadcast connectors
+    - why: broadcasting increases reliability but also increases system load
+5. replace synchronous with asynchronous communication
+    - why: with synchronized communication, slowest part slows all others
+    - efficiency: push-only vs pull-push pipeline
+6. co-locate frequently communicating parts
+    - why: minimize network communication (slower than in-memory)
+    - allocate to same physical server
+
+### Reliability tuning tactics
+
+1. carefully check external dependencies
+    - why: ensure wrong behavior of single module has minimal impact on others
+    - check time limits, possibility of multiple attempts
+2. allow modules to expose their state
+    - why: if cannot guarantee reliability, clients can check "health state" at runtime
+    - provide special interface for monitoring
+3. employ suitable error reporting mechanisms
+    - why: if module fails, inform rest of system about reason (exceptions)
+    - enables post-mortem analysis
+4. check reliability in connectors
+    - why: reduces probability of failure propagation beyond module border
+5. avoid single points of failure
+    - why: failure in critical part paralyzes whole system
+    - how: replication, decomposition, strengthening connectors
+    - some architectures tend to have central parts (Blackboard, Microkernel)
+6. integrate auto-backup and recovery mechanisms
+    - why: reduce risk of reliability breach due to data loss
+    - if something fails, repair it quickly and automatically
+7. integrate health state monitoring
+    - why: possibility of fast reaction
+
+### Scalability tuning tactics
+
+1. make modules integral with clear purpose
+    - why: adding new modules or replication has minimal impact
+    - big components with mixed functionality violate this rule
+2. distribute data sources
+    - why: avoid bottleneck during system expansion
+3. identify data suitable for replication
+    - why: serve more clients accessing data concurrently
+4. replace direct dependencies with indirect
+    - why: direct dependencies require multiplication of relationships during expansion
+    - indirect dependencies (broadcasting) more suitable
+    - basic principle of component systems
+5. use parallel processing
+    - why: acceleration of expensive calculations for increasing clients
+6. eliminate bottlenecks
+    - why: avoid slowing down when number of clients increases
+    - how: better distribution of responsibilities, replication
+
+### Maintainability tuning tactics
+
+1. split different responsibilities to different modules
+    - why: faster localization of parts requiring changes
+    - key and most difficult part of component SW development
+2. keep modules small and compact
+    - why: easily modify small functionality by replacing modules
+3. isolate data from computation
+    - why: changes in data won't require changes in computation and vice versa
+4. remove interaction operations from modules
+    - why: interaction logic should be in connectors
+    - Broker architecture: proxies, brokers, bridges handle communication
+5. separate different communication principles to different connectors
+    - why: easy allocation of part requiring change
+    - different connectors for broadcasting, synchronous, asynchronous
+6. remove functionality operations from connectors
+    - why: functionality should be in modules
+    - e.g., error checking belongs in modules
+7. eliminate unnecessary dependencies
+    - why: plenty of dependencies decreases understandability
+    - MVC: dependencies explicit, wiring provided via dependency injection
+8. make architecture hierarchical
+    - why: multiple views on system at different abstraction levels
+    - some architectures more hierarchical (layered) than others (Pipes&Filters, Broker)
+
+## Clean Code principles
+
+### What is clean code?
+
+- "clean code reads like well-written prose, never obscures designer's intent" - Grady Booch
+- "clean code always looks like it was written by someone who cares" - Michael Feathers
+- code is read 10x more than written - optimize for cheap reading
+
+### Two rules of understandable code
+
+1. name things right
+    - reveal intent, self-documenting code
+2. balance code structure
+    - no massive classes, long methods, code smells
+
+### Naming conventions
+
+- classes
+    - name by purpose (Single Responsibility Principle)
+    - avoid generic names like ApplicationManager, UtilityDataProcessor
+    - proper names lead to smaller classes
+- methods
+    - start with verb, reveal intention, do only one thing
+    - boolean methods: hasX, isX (e.g., user.isBanned() not user.getStatus())
+- getters/setters
+    - getter gets state, setter modifies state, neither should change anything else
+- no boolean parameters
+    - use descriptive methods instead
+    - user.grantAdminRights() not user.setAdminStatus(true)
+- agree on verbs
+    - consistent vocabulary (delete vs remove, dispatch vs delegate)
+- public API
+    - short and precise
+- private methods
+    - can be verbose to communicate intent
+
+### DRY - Don't repeat yourself
+
+- "all knowledge must have single, unambiguous representation in system"
+- true duplication: every change requires changes in all instances - remove it
+- false duplication: code evolves independently for different reasons - keep it
+
+### Boy scout rule
+
+- always leave the codebase cleaner than you found it
+
+### Comments
+
+- mostly harmful, obscure code
+- correct code should be self-documenting
+- use comments only to explain unexpected, non-intuitive decisions where reader lacks context
+
+## SOLID principles
+
+### S - Single Responsibility Principle (SRP)
+
+- "there should never be more than one reason for a class to change" - Robert C. Martin
+- class should be responsible to one, and only one, actor
+- more responsibilities → more dependencies → higher risk of change propagation → higher risk of bugs
+- following SRP leads to lower coupling and higher cohesion
+- cohesion
+    - how closely related and focused are different responsibilities of a module
+- coupling
+    - degree to which each module relies on other modules
+
+### O - Open/Closed Principle (OCP)
+
+- software artifacts should be open for extension but closed for modification
+- use abstractions (interfaces, abstract classes) to enable extension without modification
+- goal: avoid changes that cascade through many modules
+- beware: OCP increases design complexity - apply when change happens twice
+
+### L - Liskov Substitution Principle (LSP)
+
+- subtypes must be substitutable for their base types
+- derived classes must not:
+    - remove behavior of base class
+    - violate invariants of base class
+- if you need type checking (instanceof) you're violating LSP
+- "IS-SUBSTITUTABLE-FOR" not just "IS-A"
+
+### I - Interface Segregation Principle (ISP)
+
+- clients should not be forced to depend on methods they don't use
+- prefer small, cohesive interfaces to "fat" interfaces
+- violation leads to increased coupling, decreased flexibility and maintainability
+- fix when there's "pain" - create smaller interfaces with what you need
+
+### D - Dependency Inversion Principle (DIP)
+
+- high-level modules should not depend on low-level modules
+- both should depend on abstractions
+- abstractions should not depend on details
+- declare class dependencies explicitly in constructors
+- use dependency injection: inject through constructor, property, or parameter
+
+## Refactoring
+
+### Definition
+
+- refactoring (noun)
+    - change made to internal structure of software to make it easier to understand and cheaper to modify without changing observable behavior
+- refactoring (verb)
+    - restructure software using series of refactorings without changing observable behavior
+
+### When to refactor?
+
+- as part of routine (TDD)
+- when you find weak code (boy scout rule) or need to fix a bug
+- before/after adding new feature
+- long-term planned refactoring
+- "when you have to add a feature but code is not structured conveniently, first refactor to make it easy, then add the feature" - Martin Fowler
+
+### Medical metaphor
+
+- programmer = doctor, code = patient, refactoring = therapy
+- code smells = diagnosis
+- automated tests = monitors (vital functions)
+- without tests, operation becomes dissection
+
+### How to refactor?
+
+- always use IDE (even for renaming)
+- run tests before and after
+- boundary tests should stay green
+- small commits, atomic changes, code compiles almost always
+- "before you start refactoring, make sure you have solid suite of tests" - Martin Fowler
+
+### Common refactorings
+
+- extract method
+    - turn fragment into method with intention-revealing name
+- inline method
+    - replace method call with method body
+- move method/field
+    - relocate to class that uses it more
+- extract class
+    - split class doing too much work
+- inline class
+    - merge class that does too little
+- rename
+    - method, variable, field - to reveal intent
+- replace conditional with polymorphism
+- introduce parameter object
+    - group related parameters
+- encapsulate field/collection
+    - make private, provide accessors
+- decompose conditional
+    - extract methods from if/then/else parts
+- replace magic number with constant
+
+### Is AI good at refactoring?
+
+- LLM-based AI doesn't satisfy criteria for refactoring tool
+- refactoring tools must operate on AST level
+- LLMs operate only on text level
+- may be handy for experimenting with structure
+
+## Software testing
+
+### Definition
+
+- "testing is process of exercising or evaluating system by manual or automated means to verify it satisfies specified requirements" - IEEE
+- test oracle problem
+    - challenge of determining if output is correct for given inputs
+- "program testing can show presence of bugs, but never their absence" - Dijkstra
+
+### Important terms
+
+- error (mistake)
+    - human action that produces incorrect result
+- defect (fault/bug)
+    - manifestation of error in software
+- failure
+    - termination of ability to perform required function
+
+### Basic principles of testing
+
+1. sensitivity
+    - better to fail every time than sometimes
+    - fail-fast iterators throw ConcurrentModificationException
+2. redundancy
+    - making intentions explicit
+    - static type checking redundant with dynamic checking but catches errors earlier
+    - assertions (assert(this.isInitialized()))
+3. restriction
+    - making problem easier
+    - weaker spec may be easier to check (pointers initialized before use)
+    - stronger spec may be easier to check (static typing)
+4. partition
+    - divide and conquer
+    - failures are sparse in input space but dense in some parts
+    - systematically test cases from each partition
+5. visibility
+    - ability to measure progress against goals
+    - HTTP protocol textual for visibility (now HTTP/2 is binary)
+6. feedback
+    - applying lessons from experience
+    - checklists built on past errors
+    - error taxonomies for better test selection
+
+### Black box vs white box testing
+
+- black box (functional)
+    - test without looking at internal structure, derive test cases from specifications
+- white box (structural)
+    - test internal structures, use internal perspective to design test cases
+
+### Testing levels
+
+1. unit testing [white box]
+    - individual components tested in isolation
+    - tests must be: fast, simple, no duplication of logic, readable, deterministic, part of build process
+    - use test doubles (mocks)
+    - AAA pattern: Arrange (setup), Act (run), Assert (verify)
+2. integration testing [black/white box]
+    - components combined to test interactions
+    - uses external dependencies
+    - slower and more complex than unit tests
+3. system testing [black box]
+    - complete software system tested for requirements
+    - includes: usability, load/stress, performance, functional, security testing
+4. acceptance testing [black box]
+    - test if system meets business requirements
+    - verify system is ready for deployment from customer perspective
+
+### Other testing types
+
+- regression testing
+    - verify no changes caused new defects (cross-cutting concept)
+- smoke testing
+    - check if critical functionalities work in new unstable build
+- sanity testing
+    - verify software works as expected in new stable build
+- exploratory testing
+    - learning, designing, and executing tests together
+    - freestyle, strategy-based, scenario-based
+- fuzzing
+    - inject invalid, malformed, or unexpected inputs to reveal failures
+- metamorphic testing
+    - design tests based on relationships between input/output rather than specific pairs
+
+## Test-Driven Development (TDD)
+
+### Red-green-refactor cycle
+
+1. create failing test (red)
+2. write code to make it pass (green)
+3. refactor code and tests
+
+### FIRST principles for tests
+
+- Fast
+    - short time to run
+- Independent
+    - never depend on other tests, components, db
+- Repeatable
+    - must be deterministic
+- Self-checking
+    - test must check its own state
+- Timely
+    - test comes before implementation
+
+### Test doubles
+
+- dummy objects
+    - passed around but never used (fill parameter lists)
+- fake objects
+    - working implementations not suitable for production (in-memory db)
+- stubs
+    - provide constrained answers for test, don't respond to anything outside test
+- spies
+    - stubs that also record information (e.g., count emails sent)
+- mocks
+    - pre-programmed with expectations, specification of expected calls
+
+### Code coverage
+
+- percentage of lines exercised by tests
+- extends test execution time (~3x in .NET)
+- 100% required by TDD but not feasible due to costs (development 2-4x more expensive)
+- 100% coverage does NOT mean bug-free - only few percent of possible states tested
+
+## Mutation testing
+
+### Concept
+
+- create mutants (copies with single variations) of original program
+- test each mutant - expect tests to fail
+- if mutant doesn't fail tests = "live mutant" (indicates weak tests or equivalent mutant)
+
+### Mutation score
+
+- M_score = M_killed / (M_total - M_equivalent)
+- indication of test suite quality
+
+### Assumptions
+
+- competent programmer hypothesis
+    - programs are "nearly" correct, real faults are small variations
+- coupling effect hypothesis
+    - tests that find simple faults also find complex faults
+
+### Mutation operators (examples)
+
+- crp
+    - constant for constant replacement
+- ror
+    - relational operator replacement (`<` to `<=`)
+- vie
+    - variable initialization elimination
+
+### Problems
+
+- performance reasons (mutants grow with square of program size)
+- equivalent mutants problem (undecidable)
+- missing integration tools
+
+### Optimization approaches
+
+- weak mutation
+    - mark fault as killed when intermediate state differs (don't wait for completion)
+- statistical mutation
+    - random sample of mutants
+- selective mutation
+    - use only most efficient operators
+
+## Performance testing and profiling
+
+### Types of measurement
+
+- profiling
+    - what is slow (or fast)
+    - tools: dotTrace, dotMemory, PerfView, VS Profiling Tools
+- benchmarking
+    - how long does it take (metrics)
+    - compare different hardware, different software versions
+- microbenchmarking
+    - measuring specific small piece of code
+
+### Challenges of microbenchmarking
+
+- precision and latency of measurement
+- warmup, cleanup
+- optimized/unoptimized build
+- debugger attached
+- optimization of measured code (inlining, hoisting, unrolling)
+- JIT, GC, tiered compilation
+- environment isolation
+- collecting and evaluating (multimodal, outliers)
+
+### Tools
+
+- BenchmarkDotNet
+    - abstracts complexity, supports different configurations, results presentation
+- premature optimization is bad - focus on hot path code that delivers value
+
+## Software Quality Management (SQM)
+
+### Definition
+
+- collection of all processes ensuring software product and services meet organizational quality and achieve customer satisfaction
+- SQM defines: processes and owners, requirements, measurements, feedback throughout lifecycle
+
+### Four subcategories
+
+1. Software Quality Planning
+    - define how to achieve quality goals
+    - which standards, specific quality goals, effort and schedule estimates
+2. Software Quality Assurance (QA)
+    - monitor software engineering process
+    - assess adequacy of processes, provide evidence processes are appropriate
+3. Software Quality Control (QC)
+    - monitor if process/product conforms to standards
+    - examine specific artifacts (documents, executables) for compliance
+4. Software Process Improvement
+    - improve effectiveness of processes
+    - continuously improve to enhance software quality
+
+### Process maturity models
+
+**ISO/IEC standard (6 levels)**
+
+- level 0: incomplete process
+- level 1: performed process
+- level 2: managed process
+- level 3: established process
+- level 4: predictable process
+- level 5: optimized process
+
+**CMMI - Capability Maturity Model Integrated (5 levels)**
+
+1. initial
+    - no defined processes or only partial
+2. managed
+    - project management established, activities planned
+3. defined
+    - procedures defined, documented, managed
+4. quantitatively managed
+    - products and processes managed quantitatively
+5. optimizing
+    - team continuously optimizes activities
+
+### Other models
+
+- cowboy coding
+    - programmer relies only on self, minimize customer contact
+- personal software process
+    - disciplined process at individual level
+- six sigma
+    - quality measure focused on eliminating problems
+    - define, measure, analyze, improve, control
+
+## Continuous Integration / Continuous Delivery (CI/CD)
+
+### CI/CD pipeline steps
+
+1. compile
+2. test
+3. static code analysis (coverage, coding rules, issues, duplicates)
+4. package (download, create, publish)
+5. deploy
+
+### CI metrics
+
+- success rate
+    - percentage of successful builds during last iteration
+- time to fix test
+    - time between test failure and fix availability
+- average time to market
+    - days between two versions delivered to customer
+- project health trends
+    - code coverage, duplicates, issues, violations
+
+### Principles
+
+- always green technique: stop development if something is wrong
+- testing ideally on separate dedicated machine (clean environment)
+
+## Conflicts between quality attributes
+
+Quality tactics for one attribute can act as anti-patterns for another:
+
+| Tactic for                           | May conflict with            |
+| ------------------------------------ | ---------------------------- |
+| Performance (caching, concurrency)   | Maintainability, Testability |
+| Reliability (redundancy, monitoring) | Performance, Maintainability |
+| Testability (DI, separation)         | Performance                  |
+| Maintainability (abstraction)        | Performance                  |
+| Scalability (distribution)           | Reliability, Testability     |
+
+## Component development roles
+
+### Component developer
+
+- implementation and documentation of individual components
+- UML: class diagrams, component diagrams, interaction diagrams, activity diagrams, state diagrams
+
+### Software architect
+
+- assembling components into functional system
+- delegating internal interfaces to external
+- documentation of connectors, initial software architecture
+- UML: component diagrams, sequence diagrams
+
+### Deployer
+
+- selection of physical resources and their parameters
+- design of physical architecture
+- mapping of software components to selected resources
+- UML: deployment diagrams
+
+### Domain expert
+
+- requirements analysis
+- UML: use case diagrams, sequence diagrams for actor-component interactions
+
+## Practical examples from committee questions
+
+- quality triangle
+    - cost, time, scope (iron triangle)
+- cyclomatic complexity
+    - what it is, when to use
+- testing by stages
+    - which testing type in which development stage
+- system test vs integration test
+    - differences and implementation
+- code review process
+    - who participates, what they focus on
+- metrics for maintainability
+    - examples of measuring maintainability quality
+- code coverage
+    - interpretation, limitations
+- SLA
+    - what it contains, why it matters for cloud/SaaS
+- QoS specification types
+    - assume-guarantee vs parametric

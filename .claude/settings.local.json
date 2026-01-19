@@ -4,5 +4,6 @@
       "Bash(npx astro add:*)",
       "Bash(npm run build:*)"
     ]
-  }
+  },
+  "spinnerTipsEnabled": false
 }
