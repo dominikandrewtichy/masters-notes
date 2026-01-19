@@ -1,5 +1,9 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import mdx from "@astrojs/mdx";
+import { defineConfig } from "astro/config";
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  site: "https://dominikandrewtichy.github.io",
+  base: "/final-exam-notes",
+  integrations: [mdx()],
+});
