@@ -1,0 +1,521 @@
+---
+title: "Sample Topic 1"
+description: "This is a sample topic to demonstrate the layout"
+order: 1
+tags: ["example", "sample"]
+lastUpdated: 2024-01-19
+---
+
+## Fundamentals and models
+
+### Concepts principles and architectures
+
+#### Computer networks definition
+
+- group of computers and devices interconnected by communications channels
+- facilitates communications among users and allows resource sharing
+- fundamental characteristics
+    - delivery
+        - system must deliver data to the correct destination
+    - accuracy
+        - system must deliver data accurately
+    - timeliness
+        - system must deliver data in a timely manner
+
+#### Ideal vs real networks
+
+- ideal networks
+    - transparent for users and applications
+    - unlimited throughput
+    - no losses
+    - no delay or jitter
+    - keeps packet ordering
+    - data cannot be corrupted
+- real networks
+    - have internal structure influencing data transmission
+    - limited throughput
+    - possible data losses
+    - variable delay and jitter
+    - may not keep packet ordering
+    - data can be corrupted
+
+#### Switching approaches
+
+- connection-oriented networks (circuit switching)
+    - connection (circuit) is set up between two devices for the whole communication
+    - state must be maintained by the network
+    - easy implementation of QoS
+    - examples
+        - regular telephone system
+- connection-less networks (packet switching)
+    - no specific path is used for data transfer
+    - data is chopped into packets
+    - packets can be routed, combined, or fragmented
+    - no state maintained
+    - hard implementation of QoS (best-effort service)
+    - examples
+        - Internet
+
+#### Network protocols
+
+- set of rules defining format and order of messages exchanged
+- defines actions performed during sending and receiving
+- components
+    - syntax
+        - structure and format of data
+    - semantics
+        - meaning of each section of bits
+    - timing
+        - when data should be sent and how fast
+
+#### Standardization
+
+- de facto standards
+    - not approved by an organized body but adopted through widespread use
+- de jure standards
+    - legislated by an officially recognized body (ISO, IEEE, IETF)
+
+### Network models
+
+#### ISO/OSI model
+
+- 7-layer model proposed by OSI organization
+- ensures compatibility and interoperability
+- layers
+    - application layer
+        - network applications
+    - presentation layer
+        - data representation, encryption, compression
+    - session layer
+        - sessions, session restoration
+    - transport layer
+        - process-process communication, reliability
+    - network layer
+        - logical addressing, routing
+    - data link layer
+        - MAC and LLC (physical addressing)
+    - physical layer
+        - transmission media, signals, bit representation
+
+#### TCP/IP model
+
+- 4-layer model (hourglass model)
+- layers
+    - application layer
+        - combines OSI application, presentation, and session layers
+    - transport layer
+        - corresponds to OSI transport layer
+    - internet layer
+        - corresponds to OSI network layer
+    - network access layer
+        - combines OSI data link and physical layers
+
+### Physical layer (L1)
+
+#### Services
+
+- bit-to-signal transformation
+    - representing bits by electromagnetic energy
+- bit-rate control
+    - number of bits sent per second
+- bit synchronization
+    - timing of bit transfer
+- multiplexing
+    - dividing a link into logical channels
+- circuit switching
+
+#### Signals and media
+
+- signal
+    - function of time representing changes of physical characteristics
+    - analog or digital
+- transmission media
+    - guided (wired)
+        - twisted pair, coaxial cable, optical fiber
+    - unguided (wireless)
+        - radio signals, microwave, infrared
+
+#### Multiplexing techniques
+
+- frequency-division multiplexing (FDM)
+    - for analog signals
+- wave-division multiplexing (WDM)
+    - for optical signals
+- time-division multiplexing (TDM)
+    - for digital signals
+
+### Data link layer (L2)
+
+#### Services
+
+- framing
+    - encapsulating packets into frames
+- addressing
+    - physical (MAC) addresses
+- error control
+    - error detection and correction (CRC, FEC)
+- flow control
+    - prevents receiver congestion
+- medium access control (MAC)
+    - coordinates access to shared media
+
+#### Error control mechanisms
+
+- error detection with ARQ
+    - automatic request for retransmission
+    - suitable for low-loss media
+- forward error correction (FEC)
+    - correction using redundant data
+    - suitable for lossy media with high latency
+
+#### Medium access control protocols
+
+- random-access protocols
+    - Aloha, CSMA/CD, CSMA/CA
+- controlled-access protocols
+    - reservations, polling, tokens
+- channelization protocols
+    - FDMA, TDMA
+
+#### L2 devices and algorithms
+
+- bridge
+    - separates shared media collisions
+- switch
+    - multi-port bridge
+- backward learning algorithm
+    - learns locations of stations by observing source addresses
+- distributed spanning tree algorithm
+    - disables some bridge ports to prevent loops
+    - selects root bridge (lowest address)
+    - selects root ports (lowest path cost)
+    - selects designated ports
+
+### Network layer (L3)
+
+#### Services
+
+- internetworking
+    - logical gluing of heterogeneous networks
+- packetizing
+    - transforming segments into packets
+- fragmenting
+    - dividing datagrams larger than MTU
+- addressing
+    - logical IP addresses (IPv4, IPv6)
+- address resolution
+    - ARP (address resolution protocol)
+    - RARP (reverse address resolution protocol)
+- routing
+    - selecting paths
+- control messaging
+    - ICMP (internet control message protocol)
+
+#### Addressing
+
+- IPv4
+    - 32-bit addresses
+    - unicast, broadcast, multicast
+- IPv6
+    - 128-bit addresses
+    - unicast, multicast, anycast
+    - hexadecimal notation with abbreviation
+
+#### Internet protocol (IP)
+
+- connectionless, best-effort service
+- IPv4 datagram fields
+    - version, header length, TOS/DS
+    - total length, identification, flags, offset (fragmentation)
+    - TTL (time to live), protocol, checksum
+    - source and destination addresses
+- IPv6 basics
+    - larger address space
+    - simpler header (fixed 40B)
+    - extension headers support
+    - flow label for QoS
+
+#### Internet control message protocol (ICMP)
+
+- supplementary protocol for IP
+- reports errors and network state
+- message examples
+    - destination unreachable
+    - time exceeded (TTL expiration)
+    - echo request and reply
+
+#### Routing basics
+
+- distance vector (DV)
+    - exchanges complete routing tables with neighbors
+    - Bellman-Ford algorithm
+    - example: RIP
+- link state (LS)
+    - exchanges link states with everyone
+    - Dijkstra algorithm
+    - example: OSPF
+
+#### Multicast routing
+
+- source based tree
+    - top-down activity
+    - periodic broadcast and pruning
+    - protocols: DVMRP, MOSPF, PIM-DM
+- shared tree (core based tree)
+    - core established (meeting points)
+    - down-top activity
+    - protocols: CBT, PIM-SM
+
+### Transport layer (L4)
+
+#### Services
+
+- packetizing
+    - segments
+- connection control
+    - connection-oriented vs connectionless
+- addressing
+    - ports (service addresses)
+- reliability
+    - flow control and error control (end-to-end)
+- congestion control
+
+#### Protocols
+
+- UDP (user datagram protocol)
+    - connectionless, unreliable, best-effort
+    - minimal overhead
+    - checksum for error detection
+- TCP (transmission control protocol)
+    - connection-oriented, reliable, byte-stream
+    - three-way handshake
+    - flow control (receiver window)
+    - congestion control (congestion window)
+
+#### Flow vs congestion control
+
+- flow control
+    - protects receiver from being congested
+- congestion control
+    - protects network from being congested
+
+### Application layer (L7)
+
+#### Overview
+
+- provides services to users
+- comprises network applications and application protocols
+- communication models
+    - client-server
+    - peer-to-peer (P2P)
+
+#### Common protocols
+
+- DNS (domain name service)
+- HTTP (hypertext transfer protocol)
+- SMTP (simple mail transfer protocol)
+- FTP (file transfer protocol)
+- RTP/RTCP (real-time transport)
+
+## IPv6 advanced functionalities
+
+### IPv6 addresses
+
+#### Hierarchy
+
+- structure defined to simplify routing
+- composition
+    - global routing prefix (48 bits)
+        - first 16 bits (e.g. 2001)
+        - next 16 bits assigned by Regional Internet Registry (RIR)
+        - next 16 bits assigned by Local Internet Registry (LIR)
+    - subnet identifier (16 bits)
+    - interface identifier (64 bits)
+
+#### Abbreviation
+
+- leading zeros omission
+    - zeros at the beginning of a block can be omitted (e.g., 0074 -> 74)
+- double colon compression
+    - consecutive groups of zeros replaced by `::`
+    - can only be used once in an address
+
+#### Address types
+
+- unicast
+    - identifies a single network interface
+- multicast
+    - identifies a group of interfaces
+    - data delivered to all group members
+    - prefix `ff00::/8`
+    - replaces broadcast (broadcast not used in IPv6)
+- anycast
+    - identifies a group of interfaces
+    - data delivered to the nearest member (topologically)
+
+### Path MTU discovery
+
+- fragmentation policy
+    - routers are not allowed to fragment packets
+    - fragmentation performed only by source nodes
+- discovery mechanism
+    - source sends packet with local link MTU size
+    - if packet is too big for a router, it drops it and sends ICMPv6 Packet Too Big message
+    - source reduces packet size and retries
+    - prevents fragmentation overhead in the network
+
+### Neighbor Discovery Protocol (NDP)
+
+#### Overview
+
+- protocol replacing IPv4 ARP, RARP, and ICMP Router Discovery
+- implemented over ICMPv6
+- key messages
+    - router solicitation (RS, type 133)
+    - router advertisement (RA, type 134)
+    - neighbor solicitation (NS, type 135)
+    - neighbor advertisement (NA, type 136)
+    - redirect (type 137)
+
+#### Address resolution (L2)
+
+- replaces ARP
+- mechanism
+    - node sends NS to solicited-node multicast address of target
+    - message contains target IPv6 address and sender's L2 address
+    - target replies with NA containing its L2 address
+    - solicited-node multicast ensures efficiency (no broadcast)
+
+#### Duplicate Address Detection (DAD)
+
+- checks if address is already in use
+- process
+    - node sends NS with its own tentative address as target
+    - source address set to `::` (unspecified)
+    - if NA received, address is duplicate
+    - performed during autoconfiguration
+
+#### Neighbor Unreachability Detection (NUD)
+
+- verifies if neighbor is still reachable
+- states
+    - incomplete (resolution in progress)
+    - reachable (recently confirmed)
+    - stale (timeout elapsed, reachability unknown)
+    - delay (packet sent, waiting for upper layer confirmation)
+    - probe (actively verifying reachability with NS)
+
+#### Autoconfiguration
+
+- stateless address autoconfiguration (SLAAC)
+    - device generates address using link-local prefix and interface ID (MAC or random)
+    - DAD performed to ensure uniqueness
+    - RS sent to find routers
+    - RA received containing network prefixes
+    - global address formed by combining prefix and interface ID
+- stateful autoconfiguration
+    - uses DHCPv6
+    - indicated by flags in RA message (Managed flag)
+
+### IPv6 mobility support
+
+#### Concepts
+
+- enables nodes to move between networks while maintaining connectivity
+- home address
+    - permanent global address in home network
+- care-of address (CoA)
+    - temporary address in foreign network
+- home agent (HA)
+    - router in home network forwarding packets to mobile node
+- correspondent node (CN)
+    - peer communicating with mobile node
+
+#### Operation modes
+
+- bidirectional tunneling
+    - packets tunnelled through HA
+    - reliable but suboptimal routing (triangle routing)
+- route optimization
+    - direct communication between MN and CN
+    - requires binding registration with CN
+    - secured by Return Routability Procedure
+
+#### Return Routability Procedure
+
+- verifies MN is reachable at both home address and CoA
+- prevents redirection attacks
+- message exchange
+    - Home Test Init (HoTI) via HA
+    - Care-of Test Init (CoTI) direct to CN
+    - CN replies with Home Test (HoT) and Care-of Test (CoT)
+    - session key generated for binding update
+
+### IPv6 security
+
+#### IPsec
+
+- mandatory/recommended part of IPv6 stack
+- framework for securing IP communications
+- components
+    - authentication header (AH)
+        - provides integrity and authentication
+        - protects IP header and payload (except mutable fields)
+        - does not provide confidentiality (no encryption)
+    - encapsulating security payload (ESP)
+        - provides confidentiality (encryption), integrity, and authentication
+        - protects payload (and IP header in tunnel mode)
+- modes
+    - transport mode (protects payload only)
+    - tunnel mode (protects entire IP packet, used for VPNs)
+
+#### Key management
+
+- security association (SA)
+    - simplex agreement between peers
+    - identified by SPI, destination IP, and protocol
+- IKEv2 (Internet Key Exchange)
+    - automated key negotiation protocol
+    - establishes SAs
+    - authenticates peers
+
+### IPv6 QoS support
+
+#### Mechanisms
+
+- integrated services (IntServ)
+    - flow-based resource reservation (RSVP)
+    - guarantees bandwidth and delay
+    - requires state in all routers (scalability issues)
+- differentiated services (DiffServ)
+    - packet marking based on priority
+    - stateless core network
+    - traffic class field used for DSCP (DiffServ Code Point)
+- flow label
+    - 20-bit field in IPv6 header
+    - identifies packets of the same flow for special handling
+    - enables efficient flow classification without deep packet inspection
+
+### IPv6 transition
+
+#### Dual stack
+
+- devices run both IPv4 and IPv6 stacks simultaneously
+- most flexible and common approach during transition
+- applications choose protocol based on DNS (A vs AAAA record)
+
+#### Tunneling
+
+- encapsulating IPv6 packets within IPv4 packets
+- connects IPv6 islands over IPv4 infrastructure
+- protocols
+    - 6to4 (automatic tunneling using specific prefix)
+    - Teredo (NAT traversal support)
+    - ISATAP (intra-site tunneling)
+
+#### Translation
+
+- NAT-PT (Network Address Translation - Protocol Translation)
+- translates headers between IPv4 and IPv6
+- allows IPv6-only nodes to talk to IPv4-only nodes
+- generally discouraged due to complexity and loss of end-to-end features

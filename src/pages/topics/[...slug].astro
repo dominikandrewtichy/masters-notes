@@ -1,0 +1,67 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+
+export async function getStaticPaths() {
+  const topics = await getCollection("topics");
+  return topics.map((topic) => ({
+    params: { slug: topic.slug },
+    props: { topic },
+  }));
+}
+
+const { topic } = Astro.props;
+const { Content, headings } = await render(topic);
+---
+
+<BaseLayout title={topic.data.title}>
+  <Header />
+  <div class="flex">
+    <Sidebar currentSlug={topic.slug} />
+    <main class="flex-1 min-w-0 p-6 lg:p-8">
+      <div class="flex gap-8">
+        <article class="flex-1 min-w-0 max-w-3xl">
+          <header class="mb-8">
+            <div class="flex items-center gap-2 text-sm text-text-secondary mb-2">
+              <span>Topic {topic.data.order}</span>
+              {topic.data.lastUpdated && (
+                <>
+                  <span>·</span>
+                  <span>
+                    Updated {topic.data.lastUpdated.toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </>
+              )}
+            </div>
+            <h1 class="text-3xl font-bold">{topic.data.title}</h1>
+            {topic.data.description && (
+              <p class="text-text-secondary mt-2">{topic.data.description}</p>
+            )}
+            {topic.data.tags && topic.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2 mt-4">
+                {topic.data.tags.map((tag) => (
+                  <span class="text-sm px-2 py-1 bg-bg-secondary rounded">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </header>
+          <div class="prose">
+            <Content />
+          </div>
+        </article>
+        <aside class="hidden xl:block w-56 flex-shrink-0">
+          <TableOfContents headings={headings} />
+        </aside>
+      </div>
+    </main>
+  </div>
+</BaseLayout>

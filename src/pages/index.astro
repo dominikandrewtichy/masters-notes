@@ -1,0 +1,67 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Sidebar from "../components/Sidebar.astro";
+
+const base = import.meta.env.BASE_URL;
+
+const topics = await getCollection("topics");
+const sortedTopics = topics.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Home">
+  <Header />
+  <div class="flex">
+    <Sidebar />
+    <main class="flex-1 min-w-0 p-6 lg:p-8">
+      <div class="max-w-3xl">
+        <h1 class="text-3xl font-bold mb-2">Final Exam Notes</h1>
+        <p class="text-text-secondary mb-8">
+          Computer Science Master's Final State Exam preparation notes.
+        </p>
+
+        <h2 class="text-xl font-semibold mb-4">Topics</h2>
+        <ul class="space-y-3">
+          {sortedTopics.map((topic) => (
+            <li>
+              <a
+                href={`${base}/topics/${topic.slug}`}
+                class="block p-4 border border-border rounded-lg hover:bg-bg-secondary transition-colors"
+              >
+                <div class="flex items-start gap-3">
+                  <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-bg-secondary rounded-full text-sm font-medium">
+                    {topic.data.order}
+                  </span>
+                  <div class="min-w-0">
+                    <h3 class="font-medium">{topic.data.title}</h3>
+                    {topic.data.description && (
+                      <p class="text-sm text-text-secondary mt-1">
+                        {topic.data.description}
+                      </p>
+                    )}
+                    {topic.data.tags && topic.data.tags.length > 0 && (
+                      <div class="flex flex-wrap gap-1 mt-2">
+                        {topic.data.tags.map((tag) => (
+                          <span class="text-xs px-2 py-0.5 bg-bg-secondary rounded">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {sortedTopics.length === 0 && (
+          <p class="text-text-secondary italic">
+            No topics yet. Add MDX files to src/content/topics/ to get started.
+          </p>
+        )}
+      </div>
+    </main>
+  </div>
+</BaseLayout>
