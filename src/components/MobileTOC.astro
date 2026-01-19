@@ -1,0 +1,76 @@
+---
+import TableOfContents from "./TableOfContents.astro";
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+---
+
+<!-- Mobile TOC overlay -->
+<div id="toc-overlay" class="fixed inset-0 bg-black/50 z-40 hidden xl:hidden"></div>
+
+<!-- Mobile TOC sidebar (right side) -->
+<aside
+  id="mobile-toc"
+  class="fixed xl:hidden top-14 right-0 z-40 h-[calc(100vh-3.5rem)] w-64 border-l border-border bg-bg transform translate-x-full transition-transform duration-200"
+>
+  <div class="h-full overflow-y-auto p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-sm font-semibold text-text-secondary uppercase tracking-wide">
+        On this page
+      </h2>
+      <button
+        id="close-toc"
+        class="p-1 hover:bg-bg-secondary rounded-md text-text-secondary"
+        aria-label="Close table of contents"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <TableOfContents headings={headings} mobile={true} />
+  </div>
+</aside>
+
+<script>
+  function initMobileTOC() {
+    const tocToggle = document.getElementById("toc-toggle");
+    const mobileToc = document.getElementById("mobile-toc");
+    const tocOverlay = document.getElementById("toc-overlay");
+    const closeToc = document.getElementById("close-toc");
+
+    function openTOC() {
+      mobileToc?.classList.remove("translate-x-full");
+      tocOverlay?.classList.remove("hidden");
+    }
+
+    function closeTOC() {
+      mobileToc?.classList.add("translate-x-full");
+      tocOverlay?.classList.add("hidden");
+    }
+
+    tocToggle?.addEventListener("click", openTOC);
+    tocOverlay?.addEventListener("click", closeTOC);
+    closeToc?.addEventListener("click", closeTOC);
+
+    // Close TOC when clicking a link
+    mobileToc?.querySelectorAll(".toc-link").forEach((link) => {
+      link.addEventListener("click", closeTOC);
+    });
+  }
+
+  // Run on initial load
+  initMobileTOC();
+
+  // Re-run on Astro page transitions
+  document.addEventListener("astro:after-swap", initMobileTOC);
+</script>

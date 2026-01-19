@@ -1,17 +1,20 @@
 ---
-import ThemeToggle from "./ThemeToggle.astro";
+interface Props {
+  showTocToggle?: boolean;
+}
 
+const { showTocToggle = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
 <header class="sticky top-0 z-50 border-b border-border bg-bg">
   <div class="flex h-14 items-center justify-between px-4">
     <div class="flex items-center gap-4">
-      <!-- Mobile menu button -->
+      <!-- Left hamburger menu button (mobile only, for sidebar) -->
       <button
         id="menu-toggle"
         class="lg:hidden p-2 -ml-2 hover:bg-bg-secondary rounded-md"
-        aria-label="Toggle menu"
+        aria-label="Toggle navigation menu"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -24,23 +27,42 @@ const base = import.meta.env.BASE_URL;
     </div>
 
     <div class="flex items-center gap-2">
-      <ThemeToggle />
+      <!-- Right hamburger menu button (mobile only, for TOC) -->
+      {showTocToggle && (
+        <button
+          id="toc-toggle"
+          class="xl:hidden p-2 hover:bg-bg-secondary rounded-md"
+          aria-label="Toggle table of contents"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h10M4 18h10" />
+          </svg>
+        </button>
+      )}
     </div>
   </div>
 </header>
 
 <script>
-  const menuToggle = document.getElementById("menu-toggle");
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("sidebar-overlay");
+  function initHeader() {
+    const menuToggle = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebar-overlay");
 
-  menuToggle?.addEventListener("click", () => {
-    sidebar?.classList.toggle("-translate-x-full");
-    overlay?.classList.toggle("hidden");
-  });
+    menuToggle?.addEventListener("click", () => {
+      sidebar?.classList.toggle("-translate-x-full");
+      sidebarOverlay?.classList.toggle("hidden");
+    });
 
-  overlay?.addEventListener("click", () => {
-    sidebar?.classList.add("-translate-x-full");
-    overlay?.classList.add("hidden");
-  });
+    sidebarOverlay?.addEventListener("click", () => {
+      sidebar?.classList.add("-translate-x-full");
+      sidebarOverlay?.classList.add("hidden");
+    });
+  }
+
+  // Run on initial load
+  initHeader();
+
+  // Re-run on Astro page transitions
+  document.addEventListener("astro:after-swap", initHeader);
 </script>

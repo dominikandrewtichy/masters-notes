@@ -117,39 +117,59 @@ export default {
 
 ### Desktop Layout
 ```
-+------------------+--------------------------------+
-|     Header       |                                |
-+------------------+--------------------------------+
-|                  |                                |
-|    Sidebar       |         Main Content           |
-|    (Topics)      |                                |
-|                  |         +---------------+      |
-|    - Topic 1     |         |  Table of     |      |
-|    - Topic 2     |         |  Contents     |      |
-|    - ...         |         +---------------+      |
-|    - Topic 11    |                                |
-|                  |                                |
-+------------------+--------------------------------+
++------------------+------------------------+---------------+
+|                       Header                              |
+|  [Logo/Title]         [Search]                            |
++------------------+------------------------+---------------+
+|                  |                        |               |
+|    Sidebar       |     Main Content       |  Table of     |
+|    (Topics)      |                        |  Contents     |
+|                  |                        |               |
+|    - Topic 1     |                        |  > Section 1  |
+|    - Topic 2     |                        |    - Sub 1.1  |
+|    - ...         |                        |    - Sub 1.2  |
+|    - Topic 11    |                        |  > Section 2  |
+|                  |                        |  > Section 3  |
+|    [Dark Mode]   |                        |               |
++------------------+------------------------+---------------+
+```
+
+### Mobile Layout
+```
++---------------------------------------+
+|  [☰]    Header/Title    [Search] [☰] |
+|  Left                           Right |
++---------------------------------------+
+|                                       |
+|           Main Content                |
+|                                       |
++---------------------------------------+
+
+Left hamburger → Sidebar overlay (topics + dark mode toggle)
+Right hamburger → TOC overlay (collapsible sections)
 ```
 
 ### Components
 
 #### Header
 - Site title/logo (links to homepage)
-- Dark mode toggle button
+- Left hamburger menu button (mobile only, for sidebar)
 - Search button/trigger
+- Right hamburger menu button (mobile only, for TOC)
 
 #### Sidebar (Desktop)
 - Always visible on desktop
 - Lists all 11 topic questions
 - Shows current topic as active
 - Sticky positioning (follows scroll)
+- Dark mode toggle at bottom
 
 #### Sidebar (Mobile)
 - Hidden by default
-- Hamburger menu button in header
+- Left hamburger menu button in header
 - Slides in from left as overlay
 - Close button or tap-outside to dismiss
+- Dark mode toggle at bottom of sidebar
 
 #### Main Content Area
 - Topic title (h1)
@@ -159,9 +179,18 @@ export default {
 - Table of contents (floating/sticky on right side for long content)
 
 #### Table of Contents
-- Auto-generated from h2/h3 headings
+- Auto-generated from all heading levels (h2, h3, h4, h5, h6)
+- Hierarchical/nested display reflecting heading structure
+- Collapsible/expandable sections for nested headings
 - Highlights current section on scroll
-- Collapsible on mobile
+- Desktop: floating/sticky on right side
+- Mobile: hidden by default, accessible via right hamburger menu in header
+  - Slides in from right as overlay
+  - Close button or tap-outside to dismiss
+
+#### Dark Mode Toggle
+- Desktop: positioned in sidebar (bottom)
+- Mobile: positioned in sidebar overlay (bottom)
 
 ---
 
@@ -245,7 +274,8 @@ masters-notes/
 │   │   ├── TableOfContents.astro
 │   │   ├── Search.astro
 │   │   ├── TagList.astro
-│   │   └── MobileMenu.astro
+│   │   ├── MobileMenu.astro        # Left sidebar overlay (topics)
+│   │   └── MobileTOC.astro         # Right sidebar overlay (TOC)
 │   ├── content/
 │   │   ├── config.ts           # Content collection config
 │   │   └── topics/
@@ -295,8 +325,9 @@ The following are not part of the initial implementation but could be added late
 | Navigation | Persistent sidebar + homepage list |
 | Search | Client-side (Pagefind) |
 | Tags | Optional per-topic, filterable |
-| TOC | Auto-generated per page |
-| Theme | Light/dark with toggle |
-| Mobile | Hamburger menu for sidebar |
+| TOC | Auto-generated from all headings, collapsible/expandable |
+| Theme | Light/dark toggle (in sidebar) |
+| Mobile sidebar | Left hamburger menu for topics |
+| Mobile TOC | Right hamburger menu for table of contents |
 | Styling | Tailwind CSS + CSS variables |
 | Deployment | GitHub Pages |

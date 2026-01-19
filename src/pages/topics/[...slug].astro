@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import Sidebar from "../../components/Sidebar.astro";
 import TableOfContents from "../../components/TableOfContents.astro";
+import MobileTOC from "../../components/MobileTOC.astro";
 
 export async function getStaticPaths() {
   const topics = await getCollection("topics");
@@ -18,7 +19,7 @@ const { Content, headings } = await render(topic);
 ---
 
 <BaseLayout title={topic.data.title}>
-  <Header />
+  <Header showTocToggle={true} />
   <div class="flex">
     <Sidebar currentSlug={topic.slug} />
     <main class="flex-1 min-w-0 p-6 lg:p-8">
@@ -63,5 +64,6 @@ const { Content, headings } = await render(topic);
         </aside>
       </div>
     </main>
+    <MobileTOC headings={headings} />
   </div>
 </BaseLayout>
